@@ -5,8 +5,8 @@ const { GET, POST, DELETE } = require('../util/RESTtemplates.js');
 
 
 module.exports = (dbConfig) =>{
-    router.get('/fooditems', async (req, res) => {
-        const userId = req.body.userId;
+    router.get('/fooditems/:id', async (req, res) => {
+        const userId = req.params.id;
         try {
             let connection = await mysql2.createConnection(dbConfig);
             const [rows] = await connection.execute(`SELECT * FROM defaultdb.food_food_item WHERE user_id = ${userId}`);
