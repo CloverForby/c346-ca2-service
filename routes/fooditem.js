@@ -46,5 +46,9 @@ module.exports = (dbConfig) =>{
         )
     });
 
+    router.get('/test', (req,res) => {
+        res.json({"message": "success"})
+    })
+
     return router
 }
