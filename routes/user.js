@@ -8,17 +8,17 @@ const SALT_ROUNDS = 12;
 
 module.exports = (dbConfig) =>{
     router.post('/login', async (req, res) => {
+
+    const {name, password} = req.body;
     try {
-        const { name, password } = req.body;
-
-        const rows = await GET(dbConfig, "SELECT * FROM users WHERE name = ?", [name]);
-
+        let connection = await mysql2.createConnection(dbConfig);
+        const [rows] = await connection.execute(`SELECT * FROM defaultdb.food_users WHERE name = ${name}`);
+        
         if (!rows || rows.length === 0) {
             return res.status(401).json({ message: "Invalid name or password" });
         }
 
         const user = rows[0];
-
         const validPassword = await bcrypt.compare(password, user.password);
         if (!validPassword) {
             return res.status(401).json({ message: "Invalid name or password" });
@@ -31,9 +31,9 @@ module.exports = (dbConfig) =>{
                 name: user.name
             }
         });
-    } catch (err) {
+    } catch (err){
         console.error(err);
-        res.status(500).json({ message: "Internal server error" });
+        res.status(500).json({message: 'Cannot Login'})
     }
 });
 
