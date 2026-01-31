@@ -11,7 +11,7 @@ module.exports = (dbConfig) =>{
         const { name, password } = req.body;
 
         // 1. Fetch user by email
-        const rows = await GET(res, dbConfig, "SELECT * FROM users WHERE email = ?", [email]);
+        const rows = await GET(res, dbConfig, "SELECT * FROM users WHERE name = ?", [name]);
         if (!rows || rows.length === 0) {
             return res.status(401).json({ message: "Invalid email or password" });
         }
