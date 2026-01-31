@@ -8,20 +8,20 @@ const SALT_ROUNDS = 12;
 
 module.exports = (dbConfig) =>{
     router.post('/login', async (req, res) => {
+    try {
         const { name, password } = req.body;
 
-        // 1. Fetch user by email
-        const rows = await GET(res, dbConfig, "SELECT * FROM users WHERE name = ?", [name]);
+        const rows = await GET(dbConfig, "SELECT * FROM users WHERE name = ?", [name]);
+
         if (!rows || rows.length === 0) {
-            return res.status(401).json({ message: "Invalid email or password" });
+            return res.status(401).json({ message: "Invalid name or password" });
         }
 
         const user = rows[0];
 
-        // 2. Compare password
         const validPassword = await bcrypt.compare(password, user.password);
         if (!validPassword) {
-            return res.status(401).json({ message: "Invalid email or password" });
+            return res.status(401).json({ message: "Invalid name or password" });
         }
 
         res.json({
@@ -30,8 +30,13 @@ module.exports = (dbConfig) =>{
                 id: user.id,
                 name: user.name
             }
-        })
-    });
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
     router.get('/user/:id', async (req, res) => {
         const id = req.params.id;
         const rows = await GET(res, dbConfig, 
