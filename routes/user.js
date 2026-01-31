@@ -12,7 +12,7 @@ module.exports = (dbConfig) =>{
     const {name, password} = req.body;
     try {
         let connection = await mysql2.createConnection(dbConfig);
-        const [rows] = await connection.execute(`SELECT * FROM defaultdb.food_users WHERE name = ${name}`);
+        const [rows] = await connection.execute(`SELECT * FROM defaultdb.food_user WHERE name = ${name}`);
         
         if (!rows || rows.length === 0) {
             return res.status(401).json({ message: "Invalid name or password" });
